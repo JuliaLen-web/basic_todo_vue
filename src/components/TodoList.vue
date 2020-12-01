@@ -7,54 +7,51 @@
       v-model.trim="newItem"
       @keyup.enter="addItem"
     )
-    .todo__list-item(
-      v-for="(item, index) in list"
+    TodoItem(
+      v-for="(item, index) in list"      
+      :key="index" 
+      :item="list.item"
       :name="item.name"
-      :key="index"  
+      :complete="item.complete"
+      @deleteItem="deleteItem($event, index)"
+      @completeItem="completeItem(item)"
+      @editItem="editItem(item)"
     )
-      .todo__list-item-name(
-        :class="{ complete: item.complete }"
-        contenteditable="true"
-        @keydown.enter="updateItem($event, item)"
-        @blur="updateItem($event, item)"      
-      ) {{ item.name }}
-      button.todo__list-item-edit(        
-        @click="completeItem(item)"        
-      ) сделано
-      button.todo__list-item-delete(
-        @click="deleteItem($event, index)"
-      ) удалить
 </template>
 
 <script>
+
+import TodoItem from "./TodoItem.vue";
+
 export default {
+  components: {
+    TodoItem,
+  },
   data() {
     return {
       newItem: '',
+      editingItem: {},
       list: []
     }
   },
   methods: {
     addItem() {
-      if (this.newItem.length <= 0) {
-        return false
-      }
+      if(!this.newItem.length) return
       this.list.push({
         name: this.newItem, complete: false
       })
       this.newItem = ''
-    },
+    },    
     deleteItem(e, index) {
       this.list.splice(index, 1)
     },
     completeItem(item) {
       item.complete = !item.complete;
     },
-    updateItem(e, item) {
-      item.name = e.target.innerText;
-      e.target.blur();
+    editItem(item) {
+      this.editingItem = item;
     }
-  },
+  }
 }
 </script>
 
@@ -64,12 +61,5 @@ export default {
   width: 500px
 input
   width: 100%
-.todo__list-item
-  display: flex
-  width: 100%
-.todo__list-item-name
-  margin-right: auto
-  cursor: pointer
-.complete 
-  text-decoration: line-through
+
 </style>
