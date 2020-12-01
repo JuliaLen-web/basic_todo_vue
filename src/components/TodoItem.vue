@@ -3,18 +3,17 @@
     input( 
       type="text"
       v-if="item === editingItem" 
-      class="text-input" 
-      @keyup.enter="$emit('editItem')" 
-      @blur="$emit('editItem')" 
-      v-model="name"
+      @keyup.enter="endEdit(item)" 
+      @blur="endEdit(item)" 
+      v-model="item.name"
     )
     .todo__list-item-name(
-      :class="{ 'complete': complete }" 
+      :class="{ 'complete': item.complete }" 
       v-if="item !== editingItem"
-      @dblclick="$emit('editItem')"
-    ) {{ name }}
+      @dblclick="editItem(item)"
+    ) {{ item.name }}
     button.todo__list-item-edit(        
-      @click="$emit('completeItem')"        
+      @click="switchCompletion(item)"        
     ) сделано
     button.todo__list-item-delete(
       @click="$emit('deleteItem')"
@@ -24,13 +23,26 @@
 <script>
 export default { 
   props: {
-    item: Object,
-    editingItem: Object,
-    name: String,
-    complete: Boolean
+    item: Object
+  },
+  data() {
+    return {
+      editingItem: {}
+    }
   },
   methods: {
-    
+    switchCompletion(item) {
+      item.complete = !item.complete;
+    },
+    editItem(item) {
+      this.editingItem = item;
+    },
+    endEdit(item) {
+      this.editItem = {};
+      if (item.name.trim() === ""){
+        this.$emit('deleteItem');
+      }
+    }
   }
 }
 </script>

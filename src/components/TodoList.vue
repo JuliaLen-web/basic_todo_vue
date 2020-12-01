@@ -10,12 +10,8 @@
     TodoItem(
       v-for="(item, index) in list"      
       :key="index" 
-      :item="list.item"
-      :name="item.name"
-      :complete="item.complete"
+      :item="item"
       @deleteItem="deleteItem($event, index)"
-      @completeItem="completeItem(item)"
-      @editItem="editItem(item)"
     )
 </template>
 
@@ -30,7 +26,6 @@ export default {
   data() {
     return {
       newItem: '',
-      editingItem: {},
       list: []
     }
   },
@@ -45,12 +40,7 @@ export default {
     deleteItem(e, index) {
       this.list.splice(index, 1)
     },
-    completeItem(item) {
-      item.complete = !item.complete;
-    },
-    editItem(item) {
-      this.editingItem = item;
-    }
+    
   }
 }
 </script>
